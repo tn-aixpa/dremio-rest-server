@@ -1,0 +1,1 @@
+Start with `_JAVA_OPTIONS="--add-opens=java.base/java.nio=ALL-UNNAMED" ./mvnw spring-boot:run` (see https://arrow.apache.org/docs/java/install.html#java-compatibility).
