@@ -1,0 +1,4 @@
+spring.jpa.properties.hibernate.dialect: org.hibernate.dialect.MySQL8Dialect
+flight:
+  driver: org.apache.arrow.driver.jdbc.ArrowFlightJdbcDriver
+  url: jdbc:arrow-flight-sql://localhost:32010/?useEncryption=false&disableCertificateVerification=true&user=dremio&password=dremio123
