@@ -8,14 +8,15 @@ import static java.util.Map.entry;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.util.MultiValueMap;
 //import org.springframework.validation.annotation.Validated;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -41,20 +42,21 @@ public class DremioController {
     @GetMapping("/{table}")
 	public Page<DremioRecord> list(
             @PathVariable /*@Pattern(regexp = "\".*\"|[a-zA-Z0-9]+")*/ String table,
-            @RequestParam(required = false) /*@Pattern(regexp = "[a-zA-Z0-9]+")*/ String filter,
-            @RequestParam(required = false) /*@Pattern(regexp = "[a-zA-Z0-9]+")*/ String select,
-            Pageable pageable
+            Pageable pageable,
+            ServerHttpRequest request
         ) {
+        MultiValueMap<String, String> queryParams = request.getQueryParams();
+
         int offset = (int) pageable.getOffset();
         int limit = pageable.getPageSize();
 
         String query = "SELECT ";
 
-        query += select == null ? "*" : select;
+        query += queryParams.get("select") == null ? "*" : String.join(",", queryParams.get("select"));
 
         query += " FROM " + table;
 
-        String where = addWhere(filter);
+        String where = addWhere(queryParams);
         query += where;
 
         query += addOrderBy(pageable.getSort());
@@ -68,27 +70,24 @@ public class DremioController {
         return new PageImpl<>(result, pageable, count);
 	}
 
-    private String addWhere(String filter) {
-        if(filter == null) {
-            return "";
-        }
-
-        String where = " WHERE ";
-
-        //duplicate % character if any
-        filter = filter.replace("%", "%%");
-
-        //example: filter=id:eq.3;age:eq.30
-        String[] clauses = filter.split(";");
-        for (String clause : clauses) {
-            String[] elements = clause.split(":", 2);
-            String[] operatorAndValue = elements[1].split("\\.", 2);
+    private String addWhere(MultiValueMap<String, String> queryParams) {
+        String clauses = "";
+        for (String key : queryParams.keySet()) {
+            String clause = queryParams.getFirst(key);
+            String[] operatorAndValue = clause.split("\\.", 2);
+            if (operatorAndValue.length < 2) {
+                continue;
+            }
             String operator = operatorAndValue[0];
             String value = operatorAndValue[1];
-            where += elements[0] + " " + operators.get(operator) + " " + value + " AND ";
+            if (operators.get(operator) != null) {
+                clauses += key + " " + operators.get(operator) + " '" + value + "' AND ";
+            }
         }
-
-        return where.substring(0, where.length() - 5);
+        if (!clauses.isEmpty()) {
+            return " WHERE " + clauses.substring(0, clauses.length() - 5);
+        }
+        return "";
     }
 
     private String addOrderBy(Sort sort) {
@@ -108,8 +107,9 @@ public class DremioController {
 
 /*
  * TODO
- * - aggiungere regex ai request params
+ * - aggiungere regex al path param? usare @Param da spring-boot-starter-data-jpa o PathParam (es. "/{name:regex}")?
  * - usare metodi di JdbcTemplate con parametri (es. sostituire queryForList con quello che prende arguments) per prevenire SQL injection (vedere https://github.com/scc-digitalhub/AAC/blob/f00f80d68dc066b93347f06e482a18e6b1d455c0/src/main/java/it/smartcommunitylab/aac/audit/store/AutoJdbcAuditEventStore.java#L36)
  * - creare endpoint per GET (capire come gestire get, es. recuperando la primary key da uno schema)
  * - autenticazione: imitare approccio di PostgREST
+ * - domanda: tenere paginazione e sorting con approccio Spring o con approccio PostgREST (https://postgrest.org/en/stable/references/api/tables_views.html#limits-and-pagination) ?
  */

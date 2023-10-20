@@ -5,7 +5,7 @@ import java.util.Map;
 public class DremioRecord {
     private Map<String,Object> record;
 
-    public DremioRecord() {};
+    public DremioRecord() {}
 
     public DremioRecord(Map<String,Object> record) {
         this.record = record;
