@@ -2,8 +2,11 @@ package it.digitalhub.dremiorestserver;
 
 //import jakarta.validation.constraints.Pattern;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
 import static java.util.Map.entry;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,7 +55,7 @@ public class DremioController {
 
         String query = "SELECT ";
 
-        query += queryParams.get("select") == null ? "*" : String.join(",", queryParams.get("select"));
+        query += addSelect(queryParams.getFirst("select"));
 
         query += " FROM " + table;
 
@@ -69,6 +72,24 @@ public class DremioController {
         map.forEach(r -> result.add(new DremioRecord(r)));
         return new PageImpl<>(result, pageable, count);
 	}
+
+    private String processAlias(String column) {
+        String[] columnAndAlias = column.split(":");
+        if (columnAndAlias.length < 2) {
+            //no alias
+            return column;
+        }
+
+        return columnAndAlias[1] + " " + columnAndAlias[0];
+    }
+
+    private String addSelect(String select) {
+        if (select == null) {
+            return "*";
+        }
+        
+        return String.join(",", Arrays.stream(select.split(",")).map(this::processAlias).collect(Collectors.toList()));
+    }
 
     private String addWhere(MultiValueMap<String, String> queryParams) {
         String clauses = "";
