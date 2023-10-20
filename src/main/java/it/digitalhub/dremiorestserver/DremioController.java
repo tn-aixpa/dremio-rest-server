@@ -74,6 +74,9 @@ public class DremioController {
         String clauses = "";
         for (String key : queryParams.keySet()) {
             String clause = queryParams.getFirst(key);
+            if (clause == null) {
+                continue;
+            }
             String[] operatorAndValue = clause.split("\\.", 2);
             if (operatorAndValue.length < 2) {
                 continue;

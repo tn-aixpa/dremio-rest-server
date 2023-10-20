@@ -3,19 +3,19 @@ package it.digitalhub.dremiorestserver;
 import java.util.Map;
 
 public class DremioRecord {
-    private Map<String,Object> record;
+    private Map<String,Object> recordMap;
 
     public DremioRecord() {}
 
-    public DremioRecord(Map<String,Object> record) {
-        this.record = record;
+    public DremioRecord(Map<String,Object> recordMap) {
+        this.recordMap = recordMap;
     }
 
-    public Map<String,Object> getRecord() {
-        return this.record;
+    public Map<String,Object> getRecordMap() {
+        return this.recordMap;
     }
 
-    public void setRecord(Map<String,Object> record) {
-        this.record = record;
+    public void setRecordMap(Map<String,Object> recordMap) {
+        this.recordMap = recordMap;
     }
 }
