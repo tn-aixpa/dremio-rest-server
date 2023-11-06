@@ -12,4 +12,9 @@ class WebConfig {
     HandlerMethodArgumentResolver reactivePageableHandlerMethodArgumentResolver() {
         return new ReactivePageableHandlerMethodArgumentResolver();
     }
+
+    @Bean
+    SelectQueryFactory selectQueryFactory() {
+        return new SelectQueryFactory();
+    }
 }
