@@ -8,8 +8,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.util.MultiValueMap;
 
-//TODO implementare come estensione di FactoryBean?
-
 public class SelectQueryFactory {
 
     private String processAlias(String column) {

@@ -1,5 +1,7 @@
 spring.jpa.properties.hibernate.dialect: org.hibernate.dialect.MySQL8Dialect
 spring:
   datasource:
-    url: jdbc:arrow-flight-sql://localhost:32010/?useEncryption=false&disableCertificateVerification=true&user=dremio&password=dremio123
+    url: jdbc:arrow-flight-sql://${DREMIO_URL:localhost:32010/?useEncryption=false&disableCertificateVerification=true&user=dremio&password=dremio123}
     driver-class-name: org.apache.arrow.driver.jdbc.ArrowFlightJdbcDriver
+dremio:
+  tables: ${DREMIO_TABLES:}
