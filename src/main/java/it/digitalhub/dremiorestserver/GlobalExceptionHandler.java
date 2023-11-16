@@ -1,29 +1,23 @@
 package it.digitalhub.dremiorestserver;
 
-import jakarta.validation.ConstraintViolationException;
-import reactor.core.publisher.Mono;
-
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.NoSuchElementException;
+
+import javax.validation.ConstraintViolationException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.server.reactive.ServerHttpRequest;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.reactive.result.method.annotation.ResponseEntityExceptionHandler;
-import org.springframework.web.server.ServerWebExchange;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 @ControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
@@ -40,27 +34,32 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
      * @param request Web request.
      * @return ResponseEntity with a detailed body.
      */
-    private Mono<ResponseEntity<Object>> buildResponse(Exception ex, HttpStatus status, ServerWebExchange request, String message) {
+    private ResponseEntity<Object> buildResponse(Exception ex, HttpStatus status, WebRequest request, String message) {
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("timestamp", formatter.format(Instant.now()));
         body.put("status", status.value());
         body.put("error", status.getReasonPhrase());
         body.put("message", message);
 
-        if (request instanceof ServerHttpRequest) body.put(
+        if (request instanceof ServletWebRequest) body.put(
             "path",
-            ((ServerHttpRequest) request).getURI()
+            ((ServletWebRequest) request).getRequest().getRequestURI()
         );
 
         return handleExceptionInternal(ex, body, new HttpHeaders(), status, request);
     }
 
-    private Mono<ResponseEntity<Object>> buildResponse(Exception ex, HttpStatus status, ServerWebExchange request) {
+    private ResponseEntity<Object> buildResponse(Exception ex, HttpStatus status, WebRequest request) {
         return buildResponse(ex, status, request, ex.getMessage());
     }
 
-    @ExceptionHandler(IllegalArgumentException.class)
-    Mono<ResponseEntity<Object>> illegalArgumentHandler(IllegalArgumentException ex, ServerWebExchange request) {
+    @ExceptionHandler(value = { IllegalArgumentException.class })
+    ResponseEntity<Object> illegalArgumentHandler(IllegalArgumentException ex, WebRequest request) {
+        return buildResponse(ex, HttpStatus.BAD_REQUEST, request);
+    }
+
+    @ExceptionHandler(value = { ConstraintViolationException.class })
+    ResponseEntity<Object> constraintViolationHandler(ConstraintViolationException ex, WebRequest request) {
         return buildResponse(ex, HttpStatus.BAD_REQUEST, request);
     }
 }
