@@ -51,7 +51,7 @@ public class DremioService implements InitializingBean {
         String orderBy = addOrderBy(query.getSort());
 
         String sql = String.format(sqlTemplate, columns, query.getTableName(), orderBy, limit, offset);
-        List<Map<String,Object>> map = jdbcTemplate.queryForList(sql);
+        List<Map<String,Object>> map = jdbcTemplate.query(sql, new DremioRowMapper());
 
         Long count = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM " + query.getTableName(), Long.class);
         List<DremioRecord> result = new ArrayList<>();
