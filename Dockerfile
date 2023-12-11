@@ -10,4 +10,4 @@ ENV APP=dremio-rest-server-0.0.1-SNAPSHOT.jar
 LABEL org.opencontainers.image.source=https://github.com/scc-digitalhub/dremio-rest-server
 COPY --from=build /tmp/target/*.jar /app/${APP}
 EXPOSE 8080
-CMD ["/app/dremio-rest-server-0.0.1-SNAPSHOT.jar"]
+CMD ["/app/dremio-rest-server-0.0.1-SNAPSHOT.jar", "--add-opens=java.base/java.nio=ALL-UNNAMED"]
