@@ -6,7 +6,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import javax.validation.ConstraintViolationException;
+//import javax.validation.ConstraintViolationException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,8 +58,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return buildResponse(ex, HttpStatus.BAD_REQUEST, request);
     }
 
+    /*
     @ExceptionHandler(value = { ConstraintViolationException.class })
     ResponseEntity<Object> constraintViolationHandler(ConstraintViolationException ex, WebRequest request) {
         return buildResponse(ex, HttpStatus.BAD_REQUEST, request);
     }
+    */
 }

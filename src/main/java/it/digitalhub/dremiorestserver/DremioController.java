@@ -1,6 +1,6 @@
 package it.digitalhub.dremiorestserver;
 
-import javax.validation.constraints.Pattern;
+//import javax.validation.constraints.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -22,7 +22,8 @@ public class DremioController {
 
     @GetMapping("/{table}")
 	public DremioResult list(
-            @PathVariable @Pattern(regexp = "[a-zA-Z0-9_]+(\\.[a-zA-Z0-9_]+)*") String table,
+            //@PathVariable @Pattern(regexp = "[a-zA-Z0-9_]+(\\.[a-zA-Z0-9_]+)*") String table,
+            @PathVariable String table,
             Pageable pageable,
             ServletWebRequest request
         ) {
