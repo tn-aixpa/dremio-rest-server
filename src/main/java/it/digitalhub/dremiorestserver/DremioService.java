@@ -7,7 +7,6 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -20,8 +19,11 @@ public class DremioService implements InitializingBean {
     @Value("${dremio.tables}")
     private List<String> tables;
 
-    @Autowired
-	JdbcTemplate jdbcTemplate;
+	private final JdbcTemplate jdbcTemplate;
+
+    public DremioService(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
     private String addOrderBy(Sort sort) {
         if(!sort.isSorted()) {

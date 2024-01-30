@@ -2,7 +2,6 @@ package it.digitalhub.dremiorestserver;
 
 import javax.validation.constraints.Pattern;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,11 +13,14 @@ import org.springframework.web.context.request.ServletWebRequest;
 @Validated
 public class DremioController {
 
-    @Autowired
     private DremioService service;
 
-    @Autowired
     private SelectQueryFactory factory;
+
+    public DremioController(DremioService service, SelectQueryFactory factory) {
+        this.service = service;
+        this.factory = factory;
+    }
 
     @GetMapping("/{table}")
 	public DremioResult list(
