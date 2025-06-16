@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: © 2025 DSLab - Fondazione Bruno Kessler
+#
+# SPDX-License-Identifier: Apache-2.0
+
 FROM maven:3.8.2-eclipse-temurin-11 AS build
 COPY ./src /tmp/src
 COPY ./pom.xml /tmp/pom.xml
