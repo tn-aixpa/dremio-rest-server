@@ -1,6 +1,6 @@
 # Dremio REST Server
 
-[![license](https://img.shields.io/badge/license-Apache%202.0-blue)](https://github.com/scc-digitalhub/dremio-rest-server/LICENSE) ![GitHub Release](https://img.shields.io/github/v/release/scc-digitalhub/dremio-rest-server)
+[![license](https://img.shields.io/badge/license-Apache%202.0-blue)](https://github.com/tn-aixpa/dremio-rest-server/LICENSE) ![GitHub Release](https://img.shields.io/github/v/release/tn-aixpa/dremio-rest-server)
 ![Status](https://img.shields.io/badge/status-stable-gold)
 
 The Dremio REST Server is a Java SpringBoot application that provides a REST API for Dremio using Arrow Flight JDBC driver.
@@ -20,7 +20,7 @@ docker run -p 8080:8080 -e "DREMIO_TABLES=myspace.mytable1,myspace.mytable2" dre
 
 ## Configuration
 
-You can configure the application via environment variables. The following variables are supported (see ["application.yaml"](https://github.com/scc-digitalhub/dremio-rest-server/blob/main/src/main/resources/application.yaml) file for defaults):
+You can configure the application via environment variables. The following variables are supported (see ["application.yaml"](src/main/resources/application.yaml) file for defaults):
 
 | KEY           | DESCRIPTION                                                            |
 | ------------- | ---------------------------------------------------------------------- |
