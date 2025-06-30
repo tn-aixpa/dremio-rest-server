@@ -35,7 +35,7 @@ See CONTRIBUTING for contribution instructions.
 
 The application requires Java 11.
 
-Clone the repository with `git clone https://github.com/scc-digitalhub/dremio-rest-server.git`.
+Clone the repository with `git clone https://github.com/tn-aixpa/dremio-rest-server.git`.
 
 Build with `./mvnw clean install`.
 
